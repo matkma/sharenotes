@@ -1,8 +1,19 @@
 package com.example.kaczorov.sharenotesapp;
 
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.support.v7.app.AppCompatActivity;
+
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
+import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.session.AppKeyPair;
+import com.dropbox.client2.DropboxAPI.Entry;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 /**
  * Created by kaczorov on 2016-06-19.
@@ -14,7 +25,7 @@ public class DropboxClient {
         return ourInstance;
     }
 
-    public boolean isLinked;
+    private boolean isLinked;
 
     final static private String MAIL = "appsharenotes@gmail.com";
     final static private String PASSWORD = "apppassword";
@@ -27,15 +38,50 @@ public class DropboxClient {
         isLinked = false;
     }
 
-    public void Authenticate() {
-
+    public void authenticate(AppCompatActivity activity) {
         AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
         AndroidAuthSession session = new AndroidAuthSession(appKeys);
         dbxApi = new DropboxAPI<AndroidAuthSession>(session);
-        dbxApi.getSession().setOAuth2AccessToken(TOKEN);
-        if (session.authenticationSuccessful()){
-            session.finishAuthentication();
+        dbxApi.getSession().startOAuth2Authentication(activity);
+        //dbxApi.getSession().setOAuth2AccessToken(TOKEN);
+       // if (session.authenticationSuccessful()){
+       //     session.finishAuthentication();
+       // }
+    }
+
+    public void finishAuthentication(){
+        if (dbxApi.getSession().authenticationSuccessful()) {
+            try {
+                // Required to complete auth, sets the access token on the session
+                dbxApi.getSession().finishAuthentication();
+
+                String accessToken = dbxApi.getSession().getOAuth2AccessToken();
+            } catch (IllegalStateException e) {
+                //...
+            }
         }
-        isLinked = session.isLinked();
+    }
+
+    public boolean isLinked(){
+        return dbxApi.getSession().isLinked();
+    }
+
+    public boolean UploadFile(Bitmap bitmap, String directory) throws FileNotFoundException {
+        //File inputFile = new File()
+        //FileInputStream stream = new FileInputStream(inputFile);
+        //dbxApi.putFile(inputFile.getName())
+        return true;
+    }
+
+    public String[] GetFolderNames() throws DropboxException {
+        if (!dbxApi.getSession().isLinked()) return new String[0];
+        Entry entry = dbxApi.metadata("/", 1000, null, true, null);
+        ArrayList<String> dir = new ArrayList<String>();
+        for (Entry ent : entry.contents)
+        {
+            dir.add(new String(ent.path));
+        }
+        String[] names = dir.toArray(new String[dir.size()]);
+        return names;
     }
 }
