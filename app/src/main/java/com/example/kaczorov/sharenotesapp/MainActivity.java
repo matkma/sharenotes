@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
@@ -25,6 +26,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    private final int POST_ACTIVITY = 0;
+    private final int SEARCH_ACTIVITY = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +43,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void buttonSearchClick(View view){
-        this.onResume();
+        try {
+            DropboxClient.getInstance().getFolderNames(this, SEARCH_ACTIVITY);
+        } catch (DropboxException e) {
+            e.printStackTrace();
+        }
     }
 
     public void buttonLinkClick(View view){
@@ -50,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void buttonPostClick(View view){
         try {
-            DropboxClient.getInstance().getFolderNames(this);
+            DropboxClient.getInstance().getFolderNames(this, POST_ACTIVITY);
         } catch (DropboxException e) {
             e.printStackTrace();
         }
@@ -70,9 +77,15 @@ public class MainActivity extends AppCompatActivity {
     Handler taskMessagesHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            Intent intent;
             switch (msg.what) {
-                case 0:
-                    Intent intent = new Intent(MainActivity.this, PostActivity.class);
+                case POST_ACTIVITY:
+                    intent = new Intent(MainActivity.this, PostActivity.class);
+                    intent.putExtra("Folder names", DropboxClient.getInstance().folderNames);
+                    MainActivity.this.startActivity(intent);
+                    break;
+                case SEARCH_ACTIVITY:
+                    intent = new Intent(MainActivity.this, SearchActivity.class);
                     intent.putExtra("Folder names", DropboxClient.getInstance().folderNames);
                     MainActivity.this.startActivity(intent);
                     break;

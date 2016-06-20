@@ -1,6 +1,8 @@
 package com.example.kaczorov.sharenotesapp;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.widget.Toast;
 
 import com.dropbox.client2.DropboxAPI;
@@ -20,7 +22,11 @@ import java.util.Date;
  * Created by kaczorov on 2016-06-20.
  */
 public class SendPictureTask extends AsyncTask {
+    private Context context;
 
+    public SendPictureTask(Context c) {
+        context = c;
+    }
     @Override
     protected Object doInBackground(Object[] params) {
         if (!DropboxClient.getInstance().dbxApi.getSession().isLinked()) return false;
@@ -44,7 +50,7 @@ public class SendPictureTask extends AsyncTask {
     @Override
     protected void onPostExecute(Object result) {
         if ((boolean)result){
-            DropboxClient.getInstance().currentFileToSend.delete();
+            Toast.makeText(context, "Wysłano pomyślnie", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -39,7 +39,7 @@ public class DropboxClient {
         return dbxApi.getSession().isLinked();
     }
 
-    public void getFolderNames(MainActivity activity) throws DropboxException {
-        new GetFolderNamesTask(activity).execute();
+    public void getFolderNames(MainActivity activity, int val) throws DropboxException {
+        new GetFolderNamesTask(activity).execute(val);
     }
 }

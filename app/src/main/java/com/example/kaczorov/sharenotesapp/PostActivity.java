@@ -26,15 +26,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
-public class PostActivity extends AppCompatActivity {
-    static final int REQUEST_TAKE_PHOTO = 1;
+public class PostActivity extends ListViewActivityBase {
+    private static final int REQUEST_TAKE_PHOTO = 1;
     private Uri mImageUri;
-    private String selectedFolder;
-    private ListView listView;
-    private EditText textView;
-    private ArrayList<String> folderNames = new ArrayList<String>();
-    private ArrayList<String> listItems = new ArrayList<String>();
-    private ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,41 +42,15 @@ public class PostActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        loadList();
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if(requestCode == REQUEST_TAKE_PHOTO && resultCode==RESULT_OK) {
-            new SendPictureTask().execute(selectedFolder);
+            new SendPictureTask(PostActivity.this).execute(selectedFolder);
         }
         super.onActivityResult(requestCode, resultCode, intent);
     }
 
-    private void loadList() {
-        Collections.sort(folderNames);
-        adapter.clear();
-        adapter.addAll(folderNames);
-        adapter.notifyDataSetChanged();
-    }
-
-    private void setUpListAdapter() {
-        Bundle extras = getIntent().getExtras();
-        if (extras != null){
-            String[] names = (String[])extras.get("Folder names");
-            for(String name : names){
-                folderNames.add(name);
-            }
-        }
-        adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1,
-                listItems);
-        listView.setAdapter(adapter);
-    }
-
-    private void setUpListeners() {
+    @Override
+    protected void setUpListeners() {
         textView.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
