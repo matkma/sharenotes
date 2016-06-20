@@ -13,8 +13,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listViewPost"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
         android:footerDividersEnabled="false"
-        android:choiceMode="singleChoice" />
+        android:choiceMode="singleChoice"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="47dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:layout_alignParentStart="true"
+        android:inputType="text"
+        android:hint="Dodaj nowy przedmiot..."
+        android:layout_alignParentEnd="true"
+        android:editable="true"
+        android:enabled="true" />
+
 </RelativeLayout>

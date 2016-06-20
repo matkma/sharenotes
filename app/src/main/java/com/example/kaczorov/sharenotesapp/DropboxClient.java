@@ -5,12 +5,14 @@ import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.session.AppKeyPair;
 
+import java.io.File;
+
 /**
  * Created by kaczorov on 2016-06-20.
  */
 public class DropboxClient {
     private static DropboxClient ourInstance = new DropboxClient();
-
+    private DropboxClient() {}
     public static DropboxClient getInstance() {
         return ourInstance;
     }
@@ -21,9 +23,7 @@ public class DropboxClient {
 
     public String[] folderNames;
     public DropboxAPI<AndroidAuthSession> dbxApi;
-
-    private DropboxClient() {
-    }
+    public File currentFileToSend;
 
     public void authenticate() {
         AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
