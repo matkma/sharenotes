@@ -1,9 +1,13 @@
 package com.example.kaczorov.sharenotesapp;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
@@ -11,10 +15,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
+import com.dropbox.client2.session.AppKeyPair;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     static final int REQUEST_TAKE_PHOTO = 1;
@@ -23,13 +31,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        DropboxClient.getInstance().authenticate(this);
+        DropboxClient.getInstance().authenticate();
         enableLinkButton(!DropboxClient.getInstance().isLinked());
     }
 
     protected void onResume() {
         super.onResume();
-        DropboxClient.getInstance().finishAuthentication();
         enableLinkButton(!DropboxClient.getInstance().isLinked());
     }
 
@@ -38,19 +45,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void buttonLinkClick(View view){
-        DropboxClient.getInstance().authenticate(this);
+        DropboxClient.getInstance().authenticate();
         enableLinkButton(!DropboxClient.getInstance().isLinked());
     }
 
     public void buttonPostClick(View view){
-        Intent intent = new Intent(this, PostActivity.class);
         try {
-            String[] names = DropboxClient.getInstance().GetFolderNames();
-            intent.putExtra("Folder names", names);
+            DropboxClient.getInstance().getFolderNames(this);
         } catch (DropboxException e) {
-            //...
+            e.printStackTrace();
         }
-        this.startActivity(intent);
     }
 
     private void enableLinkButton(boolean value)
@@ -63,4 +67,20 @@ public class MainActivity extends AppCompatActivity {
             button.setText("Połączono");
         }
     }
+
+    Handler taskMessagesHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    Intent intent = new Intent(MainActivity.this, PostActivity.class);
+                    intent.putExtra("Folder names", DropboxClient.getInstance().folderNames);
+                    MainActivity.this.startActivity(intent);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 }
+
