@@ -63,6 +63,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void buttonOpenClick(View view){
+        //TODO trzeba poprawić ścieżkę (?)
+        File file = new File(Environment.getExternalStorageDirectory().toString() + "/ShareNotesApp/Downloaded");
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(file), "*/*");
+        startActivity(Intent.createChooser(intent, "Twoje notatki"));
+    }
+
     private void enableLinkButton(boolean value)
     {
         Button button = (Button)findViewById(R.id.buttonLink);

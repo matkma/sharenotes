@@ -32,7 +32,16 @@
         android:layout_height="wrap_content"
         android:text="Szukaj notatek"
         android:id="@+id/buttonSearch"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="buttonSearchClick" />
+        android:onClick="buttonSearchClick"
+        android:layout_below="@+id/buttonPost"
+        android:layout_alignEnd="@+id/buttonPost" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Twoje notatki"
+        android:id="@+id/buttonOpen"
+        android:layout_below="@+id/buttonSearch"
+        android:layout_alignEnd="@+id/buttonSearch"
+        android:onClick="buttonOpenClick" />
 </RelativeLayout>
