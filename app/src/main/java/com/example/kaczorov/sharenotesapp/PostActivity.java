@@ -1,29 +1,18 @@
 package com.example.kaczorov.sharenotesapp;
 
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import com.dropbox.client2.exception.DropboxException;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 
 public class PostActivity extends ListViewActivityBase {
@@ -44,7 +33,7 @@ public class PostActivity extends ListViewActivityBase {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if(requestCode == REQUEST_TAKE_PHOTO && resultCode==RESULT_OK) {
-            new SendPictureTask(PostActivity.this).execute(selectedFolder);
+            new SendPictureTask(PostActivity.this).execute(selectedItem);
         }
         super.onActivityResult(requestCode, resultCode, intent);
     }
@@ -56,7 +45,7 @@ public class PostActivity extends ListViewActivityBase {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     if (adapter.getPosition("/" + textView.getText().toString()) < 0) {
-                        folderNames.add("/" + textView.getText().toString());
+                        itemsNames.add("/" + textView.getText().toString());
                         loadList();
                     }
                     textView.setText("");
@@ -70,7 +59,7 @@ public class PostActivity extends ListViewActivityBase {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 Object o = listView.getItemAtPosition(position);
-                selectedFolder = (String) o;
+                selectedItem = (String) o;
                 takePicture();
             }
         });
