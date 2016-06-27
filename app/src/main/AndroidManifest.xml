@@ -48,6 +48,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SearchActivity" />
+        <activity android:name=".SearchSubActivity"></activity>
     </application>
 
 </manifest>

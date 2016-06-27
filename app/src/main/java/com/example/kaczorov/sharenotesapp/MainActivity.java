@@ -44,8 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void buttonSearchClick(View view){
         try {
-            Toast.makeText(this, "Przeszukiwanie...", Toast.LENGTH_SHORT).show();
-            DropboxClient.getInstance().getItems(this, SEARCH_ACTIVITY);
+            DropboxClient.getInstance().getFolderNames(this, SEARCH_ACTIVITY);
         } catch (DropboxException e) {
             e.printStackTrace();
         }
@@ -87,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case SEARCH_ACTIVITY:
                     intent = new Intent(MainActivity.this, SearchActivity.class);
-                    intent.putExtra("Names", DropboxClient.getInstance().itemsMap);
+                    intent.putExtra("Names", DropboxClient.getInstance().folderNames);
                     MainActivity.this.startActivity(intent);
                     break;
                 default:

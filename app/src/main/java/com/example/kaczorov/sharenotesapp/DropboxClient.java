@@ -24,9 +24,11 @@ public class DropboxClient {
     final static private String TOKEN = "hFypMrpR_xAAAAAAAAAAB_tIiWsQvGuQsk45mQAovhCZdpalYq6ZX9WIrw9JElO1";
 
     public String[] folderNames;
-    public HashMap<String, ArrayList<String>> itemsMap;
+    public String[] itemsNames;
     public DropboxAPI<AndroidAuthSession> dbxApi;
     public File currentFileToSend;
+    public File currentFileToDownloadTo;
+    public String currentFolder;
 
     public void authenticate() {
         AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
@@ -46,7 +48,8 @@ public class DropboxClient {
         new GetFolderNamesTask(activity).execute(val);
     }
 
-    public void getItems(MainActivity activity, int val) throws DropboxException{
-        new GetItemsTask(activity).execute(val);
+    public void getItems(SearchActivity activity, int val, String path){
+        currentFolder = path;
+        new GetItemsTask(activity).execute(path, val);
     }
 }

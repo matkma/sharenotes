@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 
 public class SearchActivity extends ListViewActivityBase {
@@ -18,7 +20,7 @@ public class SearchActivity extends ListViewActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        listView = (ListView)findViewById(R.id.listViewSearch);
+        listView = (ListView)findViewById(R.id.searchListView);
         textView = (EditText)findViewById(R.id.requestTextField);
         setUpListAdapter();
         setUpListeners();
@@ -47,8 +49,7 @@ public class SearchActivity extends ListViewActivityBase {
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 Object o = listView.getItemAtPosition(position);
                 selectedItem = (String) o;
-                selectedItem += "/";
-                DropboxClient.getInstance().getItemsFromFolder(SearchActivity.this, SEARCH_SUB_ACTIVITY, selectedItem);
+                DropboxClient.getInstance().getItems(SearchActivity.this, SEARCH_SUB_ACTIVITY, selectedItem);
             }
         });
     }

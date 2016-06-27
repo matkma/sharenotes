@@ -15,34 +15,27 @@ import java.util.Map;
  * Created by kaczorov on 2016-06-27.
  */
 public class GetItemsTask extends AsyncTask {
-    private MainActivity activity;
+    private SearchActivity activity;
 
-    public GetItemsTask(MainActivity act) {
+    public GetItemsTask(SearchActivity act) {
         activity = act;
     }
 
     @Override
     protected Object doInBackground(Object[] params) {
         if (!DropboxClient.getInstance().dbxApi.getSession().isLinked()) return -1;
-        String val = (String)params[0];
+        String path = (String)params[0];
+        int val = (int)params[1];
         DropboxAPI.Entry entry = null;
+        ArrayList<String> dir = new ArrayList<String>();
         try {
-            entry = DropboxClient.getInstance().dbxApi.metadata("/", 1000, null, true, null);
-            HashMap<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
+            entry = DropboxClient.getInstance().dbxApi.metadata(path, 1000, null, true, null);
             for (DropboxAPI.Entry ent : entry.contents)
             {
-                map.put(new String(ent.path), null);
+                dir.add(ent.fileName());
             }
-            for (String path : map.keySet()){
-                entry = DropboxClient.getInstance().dbxApi.metadata(path, 1000, null, true, null);
-                ArrayList<String> items = new ArrayList<String>();
-                for (DropboxAPI.Entry ent : entry.contents)
-                {
-                    items.add(new String(ent.fileName()));
-                }
-                map.put(path, items);
-            }
-            DropboxClient.getInstance().itemsMap = map;
+            String[] names = dir.toArray(new String[dir.size()]);
+            DropboxClient.getInstance().itemsNames = names;
             return val;
         } catch (DropboxException e) {
             e.printStackTrace();
