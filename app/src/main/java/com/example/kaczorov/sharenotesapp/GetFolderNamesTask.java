@@ -1,16 +1,13 @@
 package com.example.kaczorov.sharenotesapp;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.exception.DropboxException;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * Created by kaczorov on 2016-06-20.
- */
 public class GetFolderNamesTask extends AsyncTask {
     private MainActivity activity;
 
@@ -25,13 +22,14 @@ public class GetFolderNamesTask extends AsyncTask {
         DropboxAPI.Entry entry = null;
         try {
             entry = DropboxClient.getInstance().dbxApi.metadata("/", 1000, null, true, null);
-            ArrayList<String> dir = new ArrayList<String>();
-            for (DropboxAPI.Entry ent : entry.contents)
-            {
-                dir.add(new String(ent.path));
+
+            Map<String, String> values = new HashMap<>();
+            for (DropboxAPI.Entry ent : entry.contents) {
+                values.put(new String(ent.path), ent.size);
             }
-            String[] names = dir.toArray(new String[dir.size()]);
-            DropboxClient.getInstance().folderNames = names;
+
+            DropboxClient.getInstance().setFoldersMap(values);
+
             return val;
         } catch (DropboxException e) {
             e.printStackTrace();
@@ -41,6 +39,7 @@ public class GetFolderNamesTask extends AsyncTask {
 
     @Override
     protected void onPostExecute(Object result) {
-        activity.taskMessagesHandler.sendEmptyMessage((int)result);
+        if (activity != null)
+            activity.taskMessagesHandler.sendEmptyMessage((int)result);
     }
 }

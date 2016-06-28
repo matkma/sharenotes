@@ -1,29 +1,18 @@
 package com.example.kaczorov.sharenotesapp;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.dropbox.client2.DropboxAPI;
-import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.exception.DropboxException;
-import com.dropbox.client2.session.AppKeyPair;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private final int POST_ACTIVITY = 0;
@@ -43,8 +32,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void buttonSearchClick(View view){
+        startService(new Intent(this, BackgroundService.class));
         try {
-            DropboxClient.getInstance().getFolderNames(this, SEARCH_ACTIVITY);
+            DropboxClient.getInstance().getFoldersFromDropbox(this, SEARCH_ACTIVITY);
         } catch (DropboxException e) {
             e.printStackTrace();
         }
@@ -57,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void buttonPostClick(View view){
         try {
-            DropboxClient.getInstance().getFolderNames(this, POST_ACTIVITY);
+            DropboxClient.getInstance().getFoldersFromDropbox(this, POST_ACTIVITY);
         } catch (DropboxException e) {
             e.printStackTrace();
         }
@@ -65,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void buttonOpenClick(View view){
         //TODO trzeba poprawić ścieżkę (?)
-        File file = new File(Environment.getExternalStorageDirectory().toString() + "/ShareNotesApp/Downloaded");
+        String path = Environment.getExternalStorageDirectory().toString() + "/ShareNotesApp/Downloaded";
+        File file = new File(path);
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(file), "*/*");
         startActivity(Intent.createChooser(intent, "Twoje notatki"));
@@ -89,12 +80,12 @@ public class MainActivity extends AppCompatActivity {
             switch (msg.what) {
                 case POST_ACTIVITY:
                     intent = new Intent(MainActivity.this, PostActivity.class);
-                    intent.putExtra("Names", DropboxClient.getInstance().folderNames);
+                    intent.putExtra("Names", DropboxClient.getInstance().getFoldersMap().keySet().toArray(new String[0]));
                     MainActivity.this.startActivity(intent);
                     break;
                 case SEARCH_ACTIVITY:
                     intent = new Intent(MainActivity.this, SearchActivity.class);
-                    intent.putExtra("Names", DropboxClient.getInstance().folderNames);
+                    intent.putExtra("Names", DropboxClient.getInstance().getFoldersMap().keySet().toArray(new String[0]));
                     MainActivity.this.startActivity(intent);
                     break;
                 default:
@@ -102,5 +93,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
 }
 

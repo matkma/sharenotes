@@ -8,6 +8,7 @@ import com.dropbox.client2.session.AppKeyPair;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by kaczorov on 2016-06-20.
@@ -23,8 +24,8 @@ public class DropboxClient {
     final static private String APP_SECRET = "y2z9b6g9sv6db7a";
     final static private String TOKEN = "hFypMrpR_xAAAAAAAAAAB_tIiWsQvGuQsk45mQAovhCZdpalYq6ZX9WIrw9JElO1";
 
-    public String[] folderNames;
     public String[] itemsNames;
+    public Map<String, String> foldersMap;
     public DropboxAPI<AndroidAuthSession> dbxApi;
     public File currentFileToSend;
     public File currentFileToDownloadTo;
@@ -44,12 +45,25 @@ public class DropboxClient {
         return dbxApi.getSession().isLinked();
     }
 
-    public void getFolderNames(MainActivity activity, int val) throws DropboxException {
+    public void getFoldersFromDropbox(MainActivity activity, int val) throws DropboxException {
         new GetFolderNamesTask(activity).execute(val);
     }
 
     public void getItems(SearchActivity activity, int val, String path){
         currentFolder = path;
         new GetItemsTask(activity).execute(path, val);
+    }
+
+    public String[] getFolderNames() {
+        return getFoldersMap().keySet().toArray(new String[0]);
+    }
+
+
+    public Map<String, String> getFoldersMap() {
+        return foldersMap;
+    }
+
+    public void setFoldersMap(Map<String, String> foldersMap) {
+        this.foldersMap = foldersMap;
     }
 }
