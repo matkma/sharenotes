@@ -15,9 +15,6 @@ import android.widget.Toast;
 
 import com.dropbox.client2.exception.DropboxException;
 
-import java.io.File;
-import java.net.InetAddress;
-
 public class MainActivity extends AppCompatActivity {
     private final int POST_ACTIVITY = 0;
     private final int SEARCH_ACTIVITY = 1;

@@ -5,7 +5,6 @@ import android.app.Service;
 import android.content.*;
 import android.os.*;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
 
 import com.dropbox.client2.exception.DropboxException;
 
@@ -59,17 +58,10 @@ public class BackgroundService extends Service {
                     if (previousMap != null) {
                         for (Map.Entry<String, String> entry : currentMap.entrySet()) {
                             boolean keyPresent = previousMap.containsKey(entry.getKey());
-                            boolean sizeChanged = !entry.getValue().equals(previousMap.get(entry.getKey()));
 
                             if (!keyPresent) {
                                 notifications.add(entry.getKey());
                             }
-
-                            //tutaj mialy sie sprawdzac rozmiary folderow, ale niestety w Dropboxie rozmiar folderu jest rowny 0
-                            //http://stackoverflow.com/questions/29871658/dropbox-core-api-java-cannot-get-folder-size-in-metadata
-                            /*if (sizeChanged && !notifications.contains(entry.getKey())){
-                                notifications.add(entry.getKey());
-                            }*/
                         }
                     }
 
