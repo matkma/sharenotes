@@ -34,7 +34,6 @@ public class BackgroundService extends Service {
 
     @Override
     public void onCreate() {
-        Toast.makeText(this, "Service created!", Toast.LENGTH_LONG).show();
         currentTime = new Date().getTime();
         previousTime = new Date().getTime();
         DropboxClient.getInstance().authenticate();
@@ -67,10 +66,7 @@ public class BackgroundService extends Service {
                     }
 
                     if (notifications.size() != 0){
-                        Toast.makeText(context, notifications.get(0), Toast.LENGTH_LONG).show();
                         displayNotification(notifications);
-                    } else {
-                        Toast.makeText(context, "Nic nowego", Toast.LENGTH_LONG).show();
                     }
                     previousMap = currentMap;
                 } else {
@@ -105,15 +101,6 @@ public class BackgroundService extends Service {
         mBuilder.setSmallIcon(R.mipmap.ic_launcher);
 
         myNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        //myNotificationManager.notify(notificationId, mBuilder.build());
-    }
-
-    static void countDown(int x, int s) {
-        while (x > 0 ) {
-            try {
-                Thread.sleep(s*1000);
-            } catch (Exception e) {}
-            x--;
-        }
+        myNotificationManager.notify(notificationId, mBuilder.build());
     }
 }

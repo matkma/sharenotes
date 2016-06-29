@@ -1,6 +1,9 @@
 package com.example.kaczorov.sharenotesapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -9,10 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.dropbox.client2.exception.DropboxException;
 
 import java.io.File;
+import java.net.InetAddress;
 
 public class MainActivity extends AppCompatActivity {
     private final int POST_ACTIVITY = 0;
@@ -23,54 +28,51 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         DropboxClient.getInstance().authenticate();
-        enableLinkButton(!DropboxClient.getInstance().isLinked());
+        if (!isInternetAvailable()){
+            Toast.makeText(this, "Brak internetu", Toast.LENGTH_LONG).show();
+        }
+        startService(new Intent(this, BackgroundService.class));
     }
 
     protected void onResume() {
         super.onResume();
-        enableLinkButton(!DropboxClient.getInstance().isLinked());
     }
 
-    public void buttonSearchClick(View view){
-        startService(new Intent(this, BackgroundService.class));
-        try {
-            DropboxClient.getInstance().getFoldersFromDropbox(this, SEARCH_ACTIVITY);
-        } catch (DropboxException e) {
-            e.printStackTrace();
+    public void buttonSearchClick(View view) {
+        if (!isInternetAvailable()){
+            Toast.makeText(this, "Brak internetu", Toast.LENGTH_LONG).show();
+        } else {
+            try {
+                DropboxClient.getInstance().getFoldersFromDropbox(this, SEARCH_ACTIVITY);
+                Toast.makeText(this, "Szukam notatek", Toast.LENGTH_LONG).show();
+            } catch (DropboxException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Wystapił błąd", Toast.LENGTH_LONG).show();
+            }
         }
+
     }
 
-    public void buttonLinkClick(View view){
-        DropboxClient.getInstance().authenticate();
-        enableLinkButton(!DropboxClient.getInstance().isLinked());
-    }
-
-    public void buttonPostClick(View view){
-        try {
-            DropboxClient.getInstance().getFoldersFromDropbox(this, POST_ACTIVITY);
-        } catch (DropboxException e) {
-            e.printStackTrace();
+    public void buttonPostClick(View view) {
+        if (!isInternetAvailable()){
+            Toast.makeText(this, "Brak internetu", Toast.LENGTH_LONG).show();
+        } else {
+            try {
+                DropboxClient.getInstance().getFoldersFromDropbox(this, POST_ACTIVITY);
+            } catch (DropboxException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Wystąpił błąd", Toast.LENGTH_LONG).show();
+            }
         }
+
     }
 
-    public void buttonOpenClick(View view){
-        //TODO trzeba poprawić ścieżkę (?)
-        String path = Environment.getExternalStorageDirectory().toString() + "/ShareNotesApp/Downloaded";
-        File file = new File(path);
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(file), "*/*");
-        startActivity(Intent.createChooser(intent, "Twoje notatki"));
-    }
-
-    private void enableLinkButton(boolean value)
+    public void buttonOpenClick(View view)
     {
-        Button button = (Button)findViewById(R.id.buttonLink);
-        button.setEnabled(value);
-        if (value){
-            button.setText("Połącz");
-        } else{
-            button.setText("Połączono");
-        }
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath() + "/ShareNotesApp/Downloaded");
+        intent.setDataAndType(uri, "*/*");
+        startActivity(intent);
     }
 
     Handler taskMessagesHandler = new Handler() {
@@ -94,5 +96,14 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private boolean isInternetAvailable() {
+
+        ConnectivityManager cm = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+        return isConnected;
+    }
 }
 
