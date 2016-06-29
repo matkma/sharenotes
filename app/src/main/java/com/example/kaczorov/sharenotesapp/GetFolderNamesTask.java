@@ -12,13 +12,13 @@ public class GetFolderNamesTask extends AsyncTask {
     private MainActivity activity;
 
     public GetFolderNamesTask(MainActivity act) {
-            activity = act;
+        activity = act;
     }
 
     @Override
     protected Object doInBackground(Object[] params) {
         if (!DropboxClient.getInstance().dbxApi.getSession().isLinked()) return -1;
-        int val = (int)params[0];
+        int val = (int) params[0];
         DropboxAPI.Entry entry = null;
         try {
             entry = DropboxClient.getInstance().dbxApi.metadata("/", 1000, null, true, null);
@@ -40,6 +40,6 @@ public class GetFolderNamesTask extends AsyncTask {
     @Override
     protected void onPostExecute(Object result) {
         if (activity != null)
-            activity.taskMessagesHandler.sendEmptyMessage((int)result);
+            activity.taskMessagesHandler.sendEmptyMessage((int) result);
     }
 }

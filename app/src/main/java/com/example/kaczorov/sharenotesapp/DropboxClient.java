@@ -6,16 +6,14 @@ import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.session.AppKeyPair;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by kaczorov on 2016-06-20.
- */
 public class DropboxClient {
     private static DropboxClient ourInstance = new DropboxClient();
-    private DropboxClient() {}
+
+    private DropboxClient() {
+    }
+
     public static DropboxClient getInstance() {
         return ourInstance;
     }
@@ -36,12 +34,12 @@ public class DropboxClient {
         AndroidAuthSession session = new AndroidAuthSession(appKeys);
         dbxApi = new DropboxAPI<AndroidAuthSession>(session);
         dbxApi.getSession().setOAuth2AccessToken(TOKEN);
-        if (session.authenticationSuccessful()){
+        if (session.authenticationSuccessful()) {
             session.finishAuthentication();
         }
     }
 
-    public boolean isLinked(){
+    public boolean isLinked() {
         return dbxApi.getSession().isLinked();
     }
 
@@ -49,15 +47,10 @@ public class DropboxClient {
         new GetFolderNamesTask(activity).execute(val);
     }
 
-    public void getItems(SearchActivity activity, int val, String path){
+    public void getItems(SearchActivity activity, int val, String path) {
         currentFolder = path;
         new GetItemsTask(activity).execute(path, val);
     }
-
-    public String[] getFolderNames() {
-        return getFoldersMap().keySet().toArray(new String[0]);
-    }
-
 
     public Map<String, String> getFoldersMap() {
         return foldersMap;

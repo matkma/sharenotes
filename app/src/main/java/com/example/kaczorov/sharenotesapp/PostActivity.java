@@ -17,14 +17,13 @@ import java.util.Date;
 
 public class PostActivity extends ListViewActivityBase {
     private static final int REQUEST_TAKE_PHOTO = 1;
-    private Uri mImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
-        listView = (ListView)findViewById(R.id.listViewPost);
-        textView = (EditText)findViewById(R.id.editText);
+        listView = (ListView) findViewById(R.id.listViewPost);
+        textView = (EditText) findViewById(R.id.editText);
         setUpListAdapter();
         setUpListeners();
         loadList();
@@ -32,7 +31,7 @@ public class PostActivity extends ListViewActivityBase {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if(requestCode == REQUEST_TAKE_PHOTO && resultCode==RESULT_OK) {
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             new SendPictureTask(PostActivity.this).execute(selectedItem);
         }
         super.onActivityResult(requestCode, resultCode, intent);
@@ -69,12 +68,12 @@ public class PostActivity extends ListViewActivityBase {
         Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         try {
             DropboxClient.getInstance().currentFileToSend = new File(Environment.getExternalStorageDirectory().toString() + "/ShareNotesApp/Sent",
-                                                                    new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(new Date()).toString()  + ".jpg");
+                    new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(new Date()).toString() + ".jpg");
             DropboxClient.getInstance().currentFileToSend.delete();
-            mImageUri = Uri.fromFile(DropboxClient.getInstance().currentFileToSend);
+            Uri mImageUri = Uri.fromFile(DropboxClient.getInstance().currentFileToSend);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
             startActivityForResult(intent, REQUEST_TAKE_PHOTO);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

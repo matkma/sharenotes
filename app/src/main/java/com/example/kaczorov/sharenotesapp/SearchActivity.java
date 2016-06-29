@@ -1,16 +1,11 @@
 package com.example.kaczorov.sharenotesapp;
 
-import android.app.ExpandableListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
 
 public class SearchActivity extends ListViewActivityBase {
@@ -20,8 +15,7 @@ public class SearchActivity extends ListViewActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        listView = (ListView)findViewById(R.id.searchListView);
-        textView = (EditText)findViewById(R.id.requestTextField);
+        listView = (ListView) findViewById(R.id.searchListView);
         setUpListAdapter();
         setUpListeners();
         loadList();
@@ -29,21 +23,6 @@ public class SearchActivity extends ListViewActivityBase {
 
     @Override
     public void setUpListeners() {
-        textView.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    if (adapter.getPosition("/" + textView.getText().toString()) < 0) {
-                        itemsNames.add("/" + textView.getText().toString());
-                        loadList();
-                    }
-                    textView.setText("");
-                    return true;
-                }
-                return false;
-            }
-        });
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {

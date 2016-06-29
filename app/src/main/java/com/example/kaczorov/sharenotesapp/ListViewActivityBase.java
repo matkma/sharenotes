@@ -9,9 +9,6 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Collections;
 
-/**
- * Created by kaczorov on 2016-06-20.
- */
 public abstract class ListViewActivityBase extends AppCompatActivity {
     String selectedItem = null;
     ListView listView = null;
@@ -35,9 +32,9 @@ public abstract class ListViewActivityBase extends AppCompatActivity {
 
     protected void setUpListAdapter() {
         Bundle extras = getIntent().getExtras();
-        if (extras != null){
-            String[] names = (String[])extras.get("Names");
-            for(String name : names){
+        if (extras != null) {
+            String[] names = (String[]) extras.get("Names");
+            for (String name : names) {
                 itemsNames.add(name);
             }
         }

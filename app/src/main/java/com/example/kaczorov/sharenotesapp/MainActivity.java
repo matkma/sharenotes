@@ -11,7 +11,6 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.dropbox.client2.exception.DropboxException;
@@ -28,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         DropboxClient.getInstance().authenticate();
-        if (!isInternetAvailable()){
+        if (!isInternetAvailable()) {
             Toast.makeText(this, "Brak internetu", Toast.LENGTH_LONG).show();
         }
         startService(new Intent(this, BackgroundService.class));
@@ -39,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void buttonSearchClick(View view) {
-        if (!isInternetAvailable()){
+        if (!isInternetAvailable()) {
             Toast.makeText(this, "Brak internetu", Toast.LENGTH_LONG).show();
         } else {
             try {
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void buttonPostClick(View view) {
-        if (!isInternetAvailable()){
+        if (!isInternetAvailable()) {
             Toast.makeText(this, "Brak internetu", Toast.LENGTH_LONG).show();
         } else {
             try {
@@ -67,8 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void buttonOpenClick(View view)
-    {
+    public void buttonOpenClick(View view) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath() + "/ShareNotesApp/Downloaded");
         intent.setDataAndType(uri, "*/*");
@@ -98,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isInternetAvailable() {
 
-        ConnectivityManager cm = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();

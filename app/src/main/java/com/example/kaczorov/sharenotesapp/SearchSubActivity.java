@@ -1,11 +1,9 @@
 package com.example.kaczorov.sharenotesapp;
 
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import java.io.File;
@@ -17,7 +15,7 @@ public class SearchSubActivity extends ListViewActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_sub);
-        listView = (ListView)findViewById(R.id.itemsListView);
+        listView = (ListView) findViewById(R.id.itemsListView);
         setUpListAdapter();
         setUpListeners();
         loadList();
@@ -37,7 +35,7 @@ public class SearchSubActivity extends ListViewActivityBase {
         });
     }
 
-    private void CreateFile(String dropboxPath){
+    private void CreateFile(String dropboxPath) {
         String systemPath = Environment.getExternalStorageDirectory().toString() + "/ShareNotesApp";
         File subdir = new File(systemPath, "Downloaded");
         subdir.mkdirs();

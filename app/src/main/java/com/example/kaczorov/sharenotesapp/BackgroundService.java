@@ -19,13 +19,12 @@ public class BackgroundService extends Service {
     public Context context = this;
     public Handler handler = null;
     public static Runnable runnable = null;
-    private NotificationManager myNotificationManager;
-    private int notificationId = 111;
     int counter = 0;
-    private  Map <String, String> previousMap;
-    private Map <String, String> currentMap;
+    private Map<String, String> previousMap;
+    private Map<String, String> currentMap;
     private Long currentTime;
     private Long previousTime;
+    int minutesToRefresh = 1;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -36,6 +35,7 @@ public class BackgroundService extends Service {
     public void onCreate() {
         currentTime = new Date().getTime();
         previousTime = new Date().getTime();
+
         DropboxClient.getInstance().authenticate();
         try {
             DropboxClient.getInstance().getFoldersFromDropbox(null, 0);
@@ -45,7 +45,7 @@ public class BackgroundService extends Service {
         handler = new Handler();
         runnable = new Runnable() {
             public void run() {
-                if(counter >= 60000){
+                if (counter >= minutesToRefresh * 60000) {
                     counter = 0;
                     currentMap = DropboxClient.getInstance().getFoldersMap();
                     try {
@@ -56,16 +56,24 @@ public class BackgroundService extends Service {
 
                     List<String> notifications = new ArrayList<String>();
 
-                    if (previousMap != null){
-                        for (Map.Entry<String,String> entry : currentMap.entrySet()){
+                    if (previousMap != null) {
+                        for (Map.Entry<String, String> entry : currentMap.entrySet()) {
                             boolean keyPresent = previousMap.containsKey(entry.getKey());
-                            if (!keyPresent){
+                            boolean sizeChanged = !entry.getValue().equals(previousMap.get(entry.getKey()));
+
+                            if (!keyPresent) {
                                 notifications.add(entry.getKey());
                             }
+
+                            //tutaj mialy sie sprawdzac rozmiary folderow, ale niestety w Dropboxie rozmiar folderu jest rowny 0
+                            //http://stackoverflow.com/questions/29871658/dropbox-core-api-java-cannot-get-folder-size-in-metadata
+                            /*if (sizeChanged && !notifications.contains(entry.getKey())){
+                                notifications.add(entry.getKey());
+                            }*/
                         }
                     }
 
-                    if (notifications.size() != 0){
+                    if (notifications.size() != 0) {
                         displayNotification(notifications);
                     }
                     previousMap = currentMap;
@@ -83,24 +91,27 @@ public class BackgroundService extends Service {
     }
 
     @Override
-    public void onDestroy() {}
+    public void onDestroy() {
+    }
 
     @Override
-    public void onStart(Intent intent, int startid) {}
+    public void onStart(Intent intent, int startid) {
+    }
 
     protected void displayNotification(List<String> notifications) {
-        NotificationCompat.Builder  mBuilder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
         mBuilder.setContentTitle("Nowe notatki!");
         String messageText = "";
 
-        for (String key : notifications){
-            messageText += key;
+        for (String key : notifications) {
+            messageText += key + ", ";
         }
 
         mBuilder.setContentText(messageText);
         mBuilder.setSmallIcon(R.mipmap.ic_launcher);
 
-        myNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager myNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        int notificationId = 1;
         myNotificationManager.notify(notificationId, mBuilder.build());
     }
 }
