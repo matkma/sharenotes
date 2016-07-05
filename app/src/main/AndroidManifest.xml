@@ -28,14 +28,14 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".MainActivity">
+        <activity android:name="com.example.kaczorov.kmak_kochanska.sharenotesapp.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PostActivity" />
+        <activity android:name="com.example.kaczorov.kmak_kochanska.sharenotesapp.PostActivity" />
         <activity
             android:name="com.dropbox.client2.android.AuthActivity"
             android:configChanges="orientation|keyboard"
@@ -49,11 +49,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".SearchActivity" />
-        <activity android:name=".SearchSubActivity"/>
+        <activity android:name="com.example.kaczorov.kmak_kochanska.sharenotesapp.SearchActivity" />
+        <activity android:name="com.example.kaczorov.kmak_kochanska.sharenotesapp.SearchSubActivity"/>
 
         <service
-            android:name=".BackgroundService"
+            android:name="com.example.kaczorov.kmak_kochanska.sharenotesapp.BackgroundService"
             android:enabled="true"
             android:exported="true"/>
     </application>
